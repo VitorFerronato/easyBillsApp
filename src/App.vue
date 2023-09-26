@@ -1,18 +1,46 @@
 <template>
   <div>
-    <nav><router-link to="/">Home</router-link> |</nav>
-    <router-view />
+    <div class="app flex flex-column">
+      <NavigationComp />
+      <div class="app-content flex flex-column">
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
+<script>
+import NavigationComp from "./components/Navigation.vue";
+export default {
+  components: {
+    NavigationComp,
+  },
+};
+</script>
+
+
+    Navigation<style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+}
+
+.app {
   background-color: #141625;
+  min-height: 100vh;
+
+  @media (min-width: 900px) {
+    flex-direction: row !important;
+  }
+}
+
+.app-content {
+  padding: 0 20px;
+  flex: 1;
+  position: relative;
 }
 
 button,
