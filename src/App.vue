@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-if="invoicesLoaded">
     <div v-if="!mobile" class="app flex flex-column">
       <NavigationComp />
       <div class="app-content flex flex-column">
-        <Modal v-if="modalActive"/>
+        <Modal v-if="modalActive" />
         <transition name="invoice">
           <Invoice-modal v-if="invoiceModal" />
         </transition>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import InvoiceModal from "./components/InvoiceModal.vue";
 import Modal from "./components/Modal.vue";
 import NavigationComp from "./components/Navigation.vue";
@@ -37,10 +37,12 @@ export default {
   },
 
   computed: {
-    ...mapState(["invoiceModal", "modalActive"]),
+    ...mapState(["invoiceModal", "modalActive", "invoicesLoaded"]),
   },
 
   methods: {
+    ...mapActions(["GET_INVOICES"]),
+
     checkScreen() {
       const windowWidth = window.innerWidth;
 
@@ -55,14 +57,16 @@ export default {
 
   created() {
     this.checkScreen();
+    this.GET_INVOICES();
     window.addEventListener("resize", this.checkScreen);
   },
 };
 </script>
 
 
-    Navigation<style lang="scss">
+    <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -73,22 +77,21 @@ export default {
 .app {
   background-color: #141625;
   min-height: 100vh;
-
   @media (min-width: 900px) {
     flex-direction: row !important;
   }
-}
 
-.app-content {
-  padding: 0 20px;
-  flex: 1;
-  position: relative;
+  .app-content {
+    padding: 0 20px;
+    flex: 1;
+    position: relative;
+  }
 }
 
 .mobile-message {
   text-align: center;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   height: 100vh;
   background-color: #141625;
   color: #fff;
@@ -99,6 +102,7 @@ export default {
 }
 
 // animated invoice
+
 .invoice-enter-active,
 .invoice-leave-active {
   transition: 0.8s ease all;
@@ -136,7 +140,12 @@ button,
   background-color: #33d69f;
 }
 
-// Utility classes
+.orange {
+  background-color: #ff8f00;
+}
+
+// utility classes
+
 .flex {
   display: flex;
 }
@@ -154,14 +163,15 @@ button,
   @media (min-width: 900px) {
     padding-top: 72px;
   }
-
-  .nav-link {
-    text-decoration: none;
-    color: initial;
-  }
 }
 
-// Status Button
+.nav-link {
+  text-decoration: none;
+  color: initial;
+}
+
+// Status Button Styling
+
 .status-button {
   &::before {
     content: "";
@@ -185,11 +195,19 @@ button,
   background-color: rgba(51, 214, 160, 0.1);
 }
 
+.pending {
+  &::before {
+    background-color: #ff8f00;
+  }
+  color: #ff8f00;
+  background-color: rgba(255, 145, 0, 0.1);
+}
+
 .draft {
   &::before {
     background-color: #dfe3fa;
   }
-  color: #33d69f;
+  color: #dfe3fa;
   background-color: rgba(223, 227, 250, 0.1);
 }
 </style>

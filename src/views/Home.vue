@@ -1,6 +1,6 @@
 <template>
   <div class="home container">
-    <!-- HEADER -->
+    <!-- Header -->
     <div class="header flex">
       <div class="left flex flex-column">
         <h1>INVOICES</h1>
@@ -27,17 +27,32 @@
         </div>
       </div>
     </div>
+
+    <!-- Invoices -->
+    <div>
+      <Invoice
+        v-for="(invoice, index) in invoiceData"
+        :key="index"
+        :invoice="invoice"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import Invoice from "@/components/Invoice.vue";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "HomeVue",
+  components: { Invoice },
   data() {
     return {
       filterMenu: false,
     };
+  },
+
+  computed: {
+    ...mapState(["invoiceData"]),
   },
 
   methods: {
