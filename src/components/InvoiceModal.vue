@@ -150,9 +150,9 @@
               <td class="item-name">
                 <input type="text" v-model="item.itemName" />
               </td>
-              <td class="qty">Qty <input type="text" v-model="item.qty" /></td>
+              <td class="qty"><input type="text" v-model="item.qty" /></td>
               <td class="price">
-                <input type="text" v-model="item.price" />Price
+                <input type="text" v-model="item.price" />
               </td>
               <td class="total flex">
                 ${{ (item.total = item.qty * item.price) }}
@@ -163,7 +163,7 @@
               />
             </tr>
           </table>
-          <div @click="addNewInvoice" class="flex button">
+          <div @click="addNewInvoiceItem" class="flex button">
             <img src="@/assets/icon-plus.svg" alt="" />
             Add New Item
           </div>
@@ -185,10 +185,13 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+import { uid } from "uid";
 export default {
   name: "invoiceModal",
   data() {
     return {
+      dateOptions: { year: "numeric", month: "short", day: "numeric" },
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -210,6 +213,52 @@ export default {
       invoiceItemList: [],
       invoiceTotal: 0,
     };
+  },
+
+  watch: {
+    paymentTerms() {
+      const futureDate = new Date();
+      this.paymentDueDateUnix = futureDate.setDate(
+        futureDate.getDate() + parseInt(this.paymentTerms)
+      );
+
+      this.paymentDueDate = new Date(
+        this.paymentDueDateUnix
+      ).toLocaleDateString("en-us", this.dateOptions);
+    },
+  },
+
+  methods: {
+    ...mapMutations(["TOGGLE_INVOICE"]),
+
+    closeInvoice() {
+      this.TOGGLE_INVOICE();
+    },
+
+    addNewInvoiceItem() {
+      this.invoiceItemList.push({
+        id: uid(),
+        itemName: "",
+        qty: "",
+        price: 0,
+        total: 0,
+      });
+    },
+
+    deleteInvoice(id) {
+      this.invoiceItemList = this.invoiceItemList.filter(
+        (item) => item.id !== id
+      );
+    },
+  },
+
+  created() {
+    // Get current date
+    this.invoiceDateUnix = Date.now();
+    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+      "en-us",
+      this.dateOptions
+    );
   },
 };
 </script>
