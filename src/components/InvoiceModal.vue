@@ -5,6 +5,7 @@
     class="invoice-wrap flex flex-column"
   >
     <form @submit.prevent="submitForm" class="invoice-content">
+      <LoadingComp v-show="loading" />
       <h1>New invoice</h1>
 
       <!-- Bill From -->
@@ -185,13 +186,19 @@
 </template>
 
 <script>
+import LoadingComp from "@/components/Loading.vue";
 import { mapMutations } from "vuex";
 import { uid } from "uid";
+import db from "../firebase/firebaseInit.js";
+import { collection, addDoc } from "firebase/firestore";
+
 export default {
   name: "invoiceModal",
+  components: { LoadingComp },
   data() {
     return {
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
+      loading: null,
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -249,6 +256,63 @@ export default {
       this.invoiceItemList = this.invoiceItemList.filter(
         (item) => item.id !== id
       );
+    },
+
+    callInvoiceTotal() {
+      this.invoiceTotal = 0;
+      this.invoiceItemList.forEach((item) => {
+        this.invoiceTotal += item.total;
+      });
+    },
+
+    saveDraft() {
+      this.invoiceDraft = true;
+    },
+
+    async uploadInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        alert("Please ensure you filled out work items!");
+        return;
+      }
+
+      this.loading = true;
+
+      this.callInvoiceTotal();
+
+      const dataBase = collection(db, "invoices");
+
+      const dataObj = {
+        invoiceId: uid(6),
+        billerStreetAddress: this.billerStreetAddress,
+        billerCity: this.billerCity,
+        billerZipCode: this.billerZipCode,
+        billerCountry: this.billerCountry,
+        clientName: this.clientName,
+        clientEmail: this.clientEmail,
+        clientStreetAddress: this.clientStreetAddress,
+        clientCity: this.clientCity,
+        clientZipCode: this.clientZipCode,
+        clientCountry: this.clientCountry,
+        paymentTerms: this.paymentTerms,
+        paymentDueDate: this.paymentDueDate,
+        paymentDueDateUnix: this.paymentDueDateUnix,
+        productDescription: this.productDescription,
+        invoiceItemList: this.invoiceItemList,
+        invoiceTotal: this.invoiceTotal,
+        invoicePeding: this.invoicePending,
+        invoiceDraft: this.invoiceDraft,
+        invoicePaid: null,
+      };
+
+      await addDoc(dataBase, dataObj);
+
+      this.TOGGLE_INVOICE();
+
+      this.loading = false;
+    },
+
+    submitForm() {
+      this.uploadInvoice();
     },
   },
 
