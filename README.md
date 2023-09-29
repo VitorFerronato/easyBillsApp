@@ -12,10 +12,10 @@ Easy Bill is a responsive web application built with Vue.js 3, Firebase, and Vue
 
 ## 💻 Technologies Used:
 
-- **Vue.js 3:** A progressive JavaScript framework for building modern, interactive web applications.
-- **Firebase:** A robust and scalable backend platform for real-time data storage and synchronization.
-- **VueX:** State management library for Vue.js, ensuring efficient and reactive data management.
-- **Vue Animations:** Enhance user experience with smooth transitions and animations.
+- **Vue.js 3:**
+- **Firebase:** 
+- **VueX:** 
+- **Vue Animations:**
 
 ## Project Deploy
 <a href="https://easybillsapp.netlify.app/" target="_blank" rel="noopener noreferrer">Easy Bills App</a>
