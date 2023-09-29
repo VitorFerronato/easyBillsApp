@@ -18,7 +18,8 @@ Easy Bill is a responsive web application built with Vue.js 3, Firebase, and Vue
 - **Vue Animations:** Enhance user experience with smooth transitions and animations.
 
 ## Project Deploy
-[Easy Bills](https://easybillsapp.netlify.app/){:target="_blank"}
+<a href="https://easybillsapp.netlify.app/" target="_blank" rel="noopener noreferrer">Deployed Version</a>
+
 
 
 
