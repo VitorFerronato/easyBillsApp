@@ -1,5 +1,8 @@
 <template>
-  <router-link class="invoice flex" :to="{}">
+  <router-link
+    class="invoice flex"
+    :to="{ name: 'invoice-comp', params: { invoiceId: invoice.invoiceId } }"
+  >
     <div class="left flex">
       <span class="tracking-number">#{{ invoice.invoiceId }}</span>
       <span class="due-date">{{ invoice.paymentDueDate }}</span>
@@ -7,7 +10,6 @@
     </div>
     <div class="right flex">
       <span class="price">${{ invoice.invoiceTotal }}</span>
-
       <div
         class="status-button flex"
         :class="{
@@ -29,7 +31,7 @@
 
 <script>
 export default {
-  name: "invoiceComp",
+  name: "invoice-comp",
   props: ["invoice"],
 };
 </script>

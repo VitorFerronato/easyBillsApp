@@ -6,7 +6,8 @@
   >
     <form @submit.prevent="submitForm" class="invoice-content">
       <LoadingComp v-show="loading" />
-      <h1>New invoice</h1>
+      <h1 v-if="!editInvoice">New invoice</h1>
+      <h1 v-else>Edit invoice</h1>
 
       <!-- Bill From -->
       <div class="bill-from flex-flex-column">
@@ -179,11 +180,29 @@
           </button>
         </div>
         <div class="right flex">
-          <button type="submit" @click="saveDraft" class="dark-purple">
+          <button
+            v-if="!editInvoice"
+            type="submit"
+            @click="saveDraft"
+            class="dark-purple"
+          >
             Save Draft
           </button>
-          <button type="submit" @click="publishInvoice" class="purple">
+          <button
+            v-if="!editInvoice"
+            type="submit"
+            @click="publishInvoice"
+            class="purple"
+          >
             Create Invoice
+          </button>
+          <button
+            v-if="editInvoice"
+            type="submit"
+            @click="publishInvoice"
+            class="purple"
+          >
+            Update Invoice
           </button>
         </div>
       </div>
@@ -193,7 +212,7 @@
 
 <script>
 import LoadingComp from "@/components/Loading.vue";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { uid } from "uid";
 import db from "../firebase/firebaseInit.js";
 import { collection, addDoc } from "firebase/firestore";
@@ -228,6 +247,10 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState(["editInvoice"]),
+  },
+
   watch: {
     paymentTerms() {
       const futureDate = new Date();
@@ -242,7 +265,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_MODAL"]),
+    ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_MODAL", "TOGGLE_EDIT_INVOICE"]),
 
     checkClick(e) {
       if (e.target === this.$refs.invoiceWrap) {
@@ -252,6 +275,9 @@ export default {
 
     closeInvoice() {
       this.TOGGLE_INVOICE();
+      if (this.editInvoice) {
+        this.TOGGLE_EDIT_INVOICE();
+      }
     },
 
     addNewInvoiceItem() {
