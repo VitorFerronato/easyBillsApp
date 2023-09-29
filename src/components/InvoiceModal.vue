@@ -13,7 +13,7 @@
       <div class="bill-from flex-flex-column">
         <div class="flex">
           <h4>Bill From</h4>
-          <button @click="autoFill"></button>
+          <!-- <button type="button" @click="autoFill"></button> -->
         </div>
         <div class="input flex flex-column">
           <label for="billerStreetAddress">Street Adress</label>
@@ -69,7 +69,7 @@
         <div class="input flex flex-column">
           <label for="cleintStreetAddress">Street Adress</label>
           <input
-            v-model="cleintStreetAddress"
+            v-model="clientStreetAddress"
             id="cleintStreetAddress"
             type="text"
             required
@@ -313,6 +313,10 @@ export default {
       this.invoiceDraft = true;
     },
 
+    publishInvoice() {
+      this.invoicePending = true;
+    },
+
     async uploadInvoice() {
       if (this.invoiceItemList.length <= 0) {
         alert("Please ensure you filled out work items!");
@@ -343,9 +347,11 @@ export default {
         productDescription: this.productDescription,
         invoiceItemList: this.invoiceItemList,
         invoiceTotal: this.invoiceTotal,
-        invoicePeding: this.invoicePending,
+        invoicePending: this.invoicePending,
         invoiceDraft: this.invoiceDraft,
         invoicePaid: null,
+        invoiceDateUnix: this.invoiceDateUnix,
+        invoiceDate: this.invoiceDate,
       };
 
       await addDoc(dataBase, dataObj);
@@ -385,6 +391,8 @@ export default {
         productDescription: this.productDescription,
         invoiceItemList: this.invoiceItemList,
         invoiceTotal: this.invoiceTotal,
+        invoiceDateUnix: this.invoiceDateUnix,
+        invoiceDate: this.invoiceDate,
       };
 
       await updateDoc(dataBase, dataObj);
@@ -416,7 +424,7 @@ export default {
       this.billerCountry = "Brazil";
       this.clientName = "Fulano de tal";
       this.clientEmail = "Fulano de tal @gmail.com";
-      this.clientStreetAddress = "Alguma rua"; 
+      this.clientStreetAddress = "Alguma rua";
       this.clientCity = "Hoaçaba";
       this.clientZipCode = "89584000";
       this.clientCountry = "Brazil";
@@ -426,10 +434,11 @@ export default {
       this.productDescription = "this.productDescription";
       this.invoiceItemList = [];
       this.invoiceTotal = "25";
-      this.invoicePeding = true;
+      this.invoicePending = true;
       this.invoiceDraft = false;
       this.invoicePaid = null;
     },
+    getCurrentDate() {},
   },
 
   created() {
@@ -444,6 +453,7 @@ export default {
 
     if (this.editInvoice) {
       const currentInvoice = this.currentInvoiceArray[0];
+
       this.docId = currentInvoice.docId;
       this.billerStreetAddress = currentInvoice.billerStreetAddress;
       this.billerCity = currentInvoice.billerCity;

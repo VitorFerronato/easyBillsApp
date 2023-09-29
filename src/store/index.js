@@ -64,7 +64,6 @@ export default createStore({
       const results = await getDocs(query(collection(db, 'invoices')))
 
       results.forEach((doc) => {
-        console.log(doc.data());
         if (!state.invoiceData.some(invoice => invoice.docId === doc.id)) {
           const data = {
             docId: doc.id,
