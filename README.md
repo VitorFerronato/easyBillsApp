@@ -2,6 +2,9 @@
 
 Easy Bill is a responsive web application built with Vue.js 3, Firebase, and Vue animations, designed to simplify your invoicing and expense tracking needs. With Easy Bill, you can effortlessly manage your bills and expenses in a reactive and user-friendly environment.
 
+![image](https://github.com/VitorFerronato/easyBillsApp/assets/94748997/c7cc9c16-5860-484c-ad3f-89223dd034f4)
+
+
 ## 🚀 Key Features:
 
 - **Data Management:** Add, edit, and delete bills and expenses with ease.
