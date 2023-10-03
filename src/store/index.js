@@ -9,7 +9,8 @@ export default createStore({
     modalActive: null,
     invoicesLoaded: null,
     currentInvoiceArray: null,
-    editInvoice: null
+    editInvoice: null,
+    loadingInvoices: false
   },
 
   getters: {
@@ -60,6 +61,7 @@ export default createStore({
 
   actions: {
     async GET_INVOICES({ commit, state }) {
+      state.loadingInvoices = true
 
       const results = await getDocs(query(collection(db, 'invoices')))
 
@@ -94,6 +96,7 @@ export default createStore({
           commit('SET_INVOICE_DATA', data)
         }
       })
+      state.loadingInvoices = false
 
       commit('INVOICES_LOADED')
     },

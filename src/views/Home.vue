@@ -31,15 +31,22 @@
       </div>
     </div>
 
+    <div class="loader">
+      <Loader v-if="loadingInvoices" />
+    </div>
+
     <!-- Invoices -->
-    <div v-if="invoiceData.length > 0">
+    <div v-if="invoiceData.length > 0 && !loadingInvoices">
       <Invoice
         v-for="(invoice, index) in filteredData"
         :key="index"
         :invoice="invoice"
       />
     </div>
-    <div v-else class="empty flex flex-column">
+    <div
+      v-if="invoiceData.length == 0 && !loadingInvoices"
+      class="empty flex flex-column"
+    >
       <img src="@/assets/illustration-empty.svg" alt="" />
       <h3>There is nothing here</h3>
       <p>
@@ -51,10 +58,11 @@
 
 <script>
 import Invoice from "@/components/Invoice.vue";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapActions } from "vuex";
+import Loader from "@/components/Loader.vue";
 export default {
   name: "HomeVue",
-  components: { Invoice },
+  components: { Invoice, Loader },
   data() {
     return {
       filterMenu: false,
@@ -63,7 +71,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["invoiceData"]),
+    ...mapState(["invoiceData", "loadingInvoices"]),
 
     filteredData() {
       return this.invoiceData.filter((invoice) => {
@@ -84,6 +92,7 @@ export default {
 
   methods: {
     ...mapMutations(["TOGGLE_INVOICE"]),
+    ...mapActions(["GET_INVOICES"]),
 
     newInvoice() {
       this.TOGGLE_INVOICE();
@@ -102,12 +111,19 @@ export default {
       this.filteredInvoice = e.target.innerText;
     },
   },
+  created() {
+    this.GET_INVOICES();
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .home {
   color: #fff;
+
+  .loader {
+    text-align: center;
+  }
   .header {
     margin-bottom: 65px;
 
